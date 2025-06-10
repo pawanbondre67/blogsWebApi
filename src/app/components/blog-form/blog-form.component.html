@@ -1,0 +1,28 @@
+<div class="container">
+  <h2>{{ isEdit ? 'Edit' : 'Create' }} Blog Post</h2>
+  <div *ngIf="categories.length > 0; else noCategories" class="bg-white rounded-lg shadow p-6 max-w-xl mx-auto mt-6">
+    <form (ngSubmit)="savePost()" class="space-y-4">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control w-full border border-gray-300 rounded px-3 py-2" [(ngModel)]="post.title" name="title" required placeholder="Title">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Content</label>
+        <textarea class="form-control w-full border border-gray-300 rounded px-3 py-2" [(ngModel)]="post.content" name="content" rows="5" required placeholder="Content"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select class="form-select w-full border border-gray-300 rounded px-3 py-2" [(ngModel)]="post.categoryId" name="categoryId" required>
+          <option value="" disabled>Select a category</option>
+          <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" [disabled]="!(authService.isAuthenticated$ | async)">Save</button>
+    </form>
+  </div>
+  <ng-template #noCategories>
+    <div class="alert alert-warning">
+      No categories available. Please create a category first in <a routerLink="/categories">Manage Categories</a>.
+    </div>
+  </ng-template>
+</div>

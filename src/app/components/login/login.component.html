@@ -1,0 +1,26 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">{{ isRegister ? 'Register' : 'Login' }}</h2>
+    <form #loginForm="ngForm" (ngSubmit)="submit()">
+      <div *ngIf="isRegister" class="mb-4">
+        <label class="block text-gray-700 font-medium mb-2">Full Name</label>
+        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600" [(ngModel)]="registerModel.fullName" name="fullName" required>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 font-medium mb-2">Email</label>
+        <input *ngIf="isRegister" type="email" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600" [(ngModel)]="registerModel.email" name="registerEmail" required>
+        <input *ngIf="!isRegister" type="email" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600" [(ngModel)]="loginModel.email" name="loginEmail" required>
+      </div>
+      <div class="mb-6">
+        <label class="block text-gray-700 font-medium mb-2">Password</label>
+        <input *ngIf="isRegister" type="password" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600" [(ngModel)]="registerModel.password" name="registerPassword" required>
+        <input *ngIf="!isRegister" type="password" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600" [(ngModel)]="loginModel.password" name="loginPassword" required>
+      </div>
+      <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition" [disabled]="!loginForm.valid">{{ isRegister ? 'Register' : 'Login' }}</button>
+    </form>
+    <div class="text-center mt-4">
+      <a href="#" class="text-blue-600 hover:underline" (click)="toggleMode(); $event.preventDefault()">{{ isRegister ? 'Already have an account? Login' : 'Need an account? Register' }}</a>
+    </div>
+    <button *ngIf="authService.isAuthenticated$ | async" (click)="logout()" class="w-full bg-gray-600 text-white p-2 rounded mt-4 hover:bg-gray-700 transition">Logout</button>
+  </div>
+</div>
