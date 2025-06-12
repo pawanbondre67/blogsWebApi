@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace blogApi.DTOs
+namespace blogApi.DTOs.category
 {
     public class UpdateCategoryDto
     {

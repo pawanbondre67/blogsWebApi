@@ -1,8 +1,8 @@
 ﻿using blogApi.Models;
 using blogApi.Repositories;
-using blogApi.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using blogApi.DTOs.category;
 
 namespace blogApi.Controllers
 {

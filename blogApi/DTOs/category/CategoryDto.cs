@@ -1,4 +1,4 @@
-﻿namespace blogApi.DTOs
+﻿namespace blogApi.DTOs.category
 {
     public class CategoryDto
     {

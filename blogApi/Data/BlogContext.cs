@@ -20,7 +20,7 @@ namespace blogApi.Data
             modelBuilder.Entity<BlogPost>()
                 .HasOne(b => b.Category)
                 .WithMany(c => c.BlogPosts)
-                .HasForeignKey(b => b.CategoryId);
+                .HasForeignKey(b => b.CategoryId); 
 
             modelBuilder.Entity<BlogPost>()
                 .HasOne(b => b.Author)

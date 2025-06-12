@@ -1,9 +1,12 @@
-﻿using blogApi.DTOs;
+﻿using AutoMapper;
+using blogApi.DTOs.blog;
+using blogApi.DTOs.comment;
 using blogApi.Models;
 using blogApi.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace blogApi.Controllers
 {
@@ -11,16 +14,25 @@ namespace blogApi.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        private readonly IRepository<Comment> _repository;
+        private readonly ICommentRepository _repository;
+        private readonly IMapper _mapper;
 
-        public CommentsController(IRepository<Comment> repository)
+        public CommentsController(ICommentRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet("post/{postId}")]
         public async Task<IActionResult> GetByPost(int postId)
-            => Ok(await _repository.FindAsync(c => c.BlogPostId == postId));
+        {
+            var comments = await _repository.FindAsync(c => c.BlogPostId == postId);
+            if (comments == null || !comments.Any())
+                return NotFound("No comments found for this post.");
+
+            var commentDtos = _mapper.Map<IEnumerable<CommentDto>>(comments);
+            return Ok(commentDtos);
+        }
 
         [Authorize]
         [HttpPost]
@@ -29,15 +41,14 @@ namespace blogApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var comment = new Comment
-            {
-                Content = dto.Content,
-                BlogPostId = dto.BlogPostId,
-                CreatedAt = DateTime.UtcNow,
-                UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
-            };
-            await _repository.AddAsync(comment);
-            return CreatedAtAction(nameof(GetByPost), new { postId = comment.BlogPostId }, comment);
+            var comment = _mapper.Map<Comment>(dto);
+            comment.CreatedAt = DateTime.UtcNow;
+            comment.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var savedComment = await _repository.AddAsync(comment);
+            var commentDto = _mapper.Map<CommentDto>(savedComment);
+            return CreatedAtAction(nameof(GetByPost), new { postId = comment.BlogPostId }, commentDto);
+
         }
 
         [Authorize]
