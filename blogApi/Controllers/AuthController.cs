@@ -26,7 +26,11 @@ namespace blogApi.Controllers
         {
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
             var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded) return Ok();
+            if (result.Succeeded)
+            {
+                var token = GenerateJwtToken(user);
+                return Ok(new { token });
+            }
             return BadRequest(result.Errors);
         }
 
